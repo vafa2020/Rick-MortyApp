@@ -1,13 +1,15 @@
 import { CharacterDetails } from "./component/CharacterDetails";
-import CharacterList from "./component/CharacterList";
+import CharacterList, { Character } from "./component/CharacterList";
 import Navbar, { Favourite, SearchResult } from "./component/Navbar";
 import { useState } from "react";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 import axios from "axios";
+import { Modal } from "./component/Modal";
 
 function App() {
+  const [openModal, setOpenModal] = useState(false);
   const [characters, setCharacters] = useState([]);
   const [selectId, setSelectId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,12 +25,7 @@ function App() {
           `https://rickandmortyapi.com/api/character/?name=${searchValue}`,
           { signal }
         );
-        // console.log(res.ok);
-        // if (!res.ok) {
-        //   throw new Error("data is failed");
-        // }
         toast.success("data is ok");
-
         setCharacters(data.results.slice(0, 5));
       } catch (error) {
         if (error.name === "CanceledError") {
@@ -63,7 +60,11 @@ function App() {
     <div className="app">
       <Navbar onChange={searchHandler} searchValue={searchValue}>
         <SearchResult numOfResult={characters.length} />
-        <Favourite numOfResult={favorite.length} />
+        <Favourite
+          favorite={favorite}
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+        />
       </Navbar>
       <Main>
         <CharacterList

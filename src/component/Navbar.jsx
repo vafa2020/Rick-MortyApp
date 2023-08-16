@@ -1,4 +1,6 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
+import { Character } from "./CharacterList";
+import { Modal } from "./Modal";
 const Navbar = ({ children, onChange, searchValue }) => {
   return (
     <nav className="navbar">
@@ -21,11 +23,20 @@ export const SearchResult = ({ numOfResult }) => (
   <div className="navbar__result">Found {numOfResult} Characters</div>
 );
 
-export const Favourite = ({ numOfResult }) => {
+export const Favourite = ({ favorite, setOpenModal, openModal }) => {
   return (
-    <button className="heart">
-      <HeartIcon className="icon" />
-      <span className="badge">{numOfResult}</span>
-    </button>
+    <>
+      {openModal && (
+        <Modal title={"hi dear"} setOpenModal={setOpenModal}>
+          {favorite.map((item) => (
+            <Character key={item.id} item={item} />
+          ))}
+        </Modal>
+      )}
+      <button className="heart" onClick={() => setOpenModal(true)}>
+        <HeartIcon className="icon" />
+        <span className="badge">{favorite.length}</span>
+      </button>
+    </>
   );
 };

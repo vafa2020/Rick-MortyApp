@@ -17,7 +17,11 @@ function CharacterList({ characters, isLoading, onClick, selectId }) {
           item={item}
           onClick={onClick}
           selectId={selectId}
-        />
+        >
+          <button className="icon red" onClick={() => onClick(item.id)}>
+            {item.id === selectId ? <EyeSlashIcon /> : <EyeIcon />}
+          </button>
+        </Character>
       ))}
     </div>
   );
@@ -25,15 +29,13 @@ function CharacterList({ characters, isLoading, onClick, selectId }) {
 
 export default CharacterList;
 
-const Character = ({ item, onClick, selectId }) => {
+export const Character = ({ item, children }) => {
   return (
     <div className="list__item">
       <img src={item.image} alt={item.name} />
       <CharacterName item={item} />
       <CharacterInfo item={item} />
-      <button className="icon red" onClick={() => onClick(item.id)}>
-        {item.id === selectId ? <EyeSlashIcon /> : <EyeIcon />}
-      </button>
+      {children}
     </div>
   );
 };

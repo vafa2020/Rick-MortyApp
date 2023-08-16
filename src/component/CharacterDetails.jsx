@@ -104,8 +104,7 @@ const CharacterInfo = ({ character, addedToFavorite, onAddFavorite }) => {
 };
 
 const CharacterEpisode = ({ episode }) => {
-  console.log(episode);
-  const [sort, setSort] = useState(true);
+  const [sort, setSort] = useState(false);
   if (episode === null) {
     return (
       <div style={{ flex: 1, color: "#fff" }}>please select a character</div>
