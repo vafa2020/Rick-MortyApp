@@ -1,38 +1,49 @@
 import { CharacterDetails } from "./component/CharacterDetails";
 import CharacterList from "./component/CharacterList";
-import Navbar, { SearchResult } from "./component/Navbar";
+import Navbar, { Favourite, SearchResult } from "./component/Navbar";
 import { useState } from "react";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
+import axios from "axios";
 
 function App() {
   const [characters, setCharacters] = useState([]);
   const [selectId, setSelectId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [favorite, setFavorite] = useState([]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `https://rickandmortyapi.com/api/character/?name=${searchValue}`
+        const { data } = await axios.get(
+          `https://rickandmortyapi.com/api/character/?name=${searchValue}`,
+          { signal }
         );
         // console.log(res.ok);
-        if (!res.ok) {
-          throw new Error("data is failed");
-        }
-        const data = await res.json();
+        // if (!res.ok) {
+        //   throw new Error("data is failed");
+        // }
         toast.success("data is ok");
 
         setCharacters(data.results.slice(0, 5));
       } catch (error) {
+        if (error.name === "CanceledError") {
+          console.log("abort");
+        }
         toast.error(error.message);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchData();
+    return () => {
+      controller.abort();
+    };
   }, [searchValue]);
 
   const selectHandler = async (id) => {
@@ -44,10 +55,15 @@ function App() {
     setSearchValue(value);
   };
 
+  const onAddFavoriteHandler = (newFavorite) => {
+    setFavorite((prevFav) => [...prevFav, newFavorite]);
+  };
+  const addedToFavorite = favorite.map((item) => item.id).includes(selectId);
   return (
     <div className="app">
       <Navbar onChange={searchHandler} searchValue={searchValue}>
         <SearchResult numOfResult={characters.length} />
+        <Favourite numOfResult={favorite.length} />
       </Navbar>
       <Main>
         <CharacterList
@@ -56,7 +72,11 @@ function App() {
           onClick={selectHandler}
           selectId={selectId}
         />
-        <CharacterDetails selectId={selectId} />
+        <CharacterDetails
+          selectId={selectId}
+          onAddFavorite={onAddFavoriteHandler}
+          addedToFavorite={addedToFavorite}
+        />
       </Main>
       <Toaster />
     </div>

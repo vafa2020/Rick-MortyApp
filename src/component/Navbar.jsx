@@ -11,10 +11,6 @@ const Navbar = ({ children, onChange, searchValue }) => {
         value={searchValue}
       />
       {children}
-      <button className="heart">
-        <HeartIcon className="icon" />
-        <span className="badge">3</span>
-      </button>
     </nav>
   );
 };
@@ -24,3 +20,12 @@ export default Navbar;
 export const SearchResult = ({ numOfResult }) => (
   <div className="navbar__result">Found {numOfResult} Characters</div>
 );
+
+export const Favourite = ({ numOfResult }) => {
+  return (
+    <button className="heart">
+      <HeartIcon className="icon" />
+      <span className="badge">{numOfResult}</span>
+    </button>
+  );
+};
