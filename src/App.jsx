@@ -14,8 +14,12 @@ function App() {
   const [selectId, setSelectId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
-  const [favorite, setFavorite] = useState([]);
-
+  const [favorite, setFavorite] = useState(
+    JSON.parse(localStorage.getItem("Favorites")) || []
+  );
+  useEffect(() => {
+    localStorage.setItem("Favorites", JSON.stringify(favorite));
+  }, [favorite]);
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -62,6 +66,7 @@ function App() {
         <SearchResult numOfResult={characters.length} />
         <Favourite
           favorite={favorite}
+          setFavorite={setFavorite}
           setOpenModal={setOpenModal}
           openModal={openModal}
         />

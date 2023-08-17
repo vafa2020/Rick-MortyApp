@@ -1,6 +1,7 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { Character } from "./CharacterList";
 import { Modal } from "./Modal";
+import { TrashIcon } from "@heroicons/react/24/solid";
 const Navbar = ({ children, onChange, searchValue }) => {
   return (
     <nav className="navbar">
@@ -23,13 +24,32 @@ export const SearchResult = ({ numOfResult }) => (
   <div className="navbar__result">Found {numOfResult} Characters</div>
 );
 
-export const Favourite = ({ favorite, setOpenModal, openModal }) => {
+export const Favourite = ({
+  setFavorite,
+  favorite,
+  setOpenModal,
+  openModal,
+}) => {
+  const deleteHandler = (id) => {
+    if (favorite.length === 1) {
+      setOpenModal(false);
+    }
+    const afterDelete = favorite.filter((item) => item.id !== id);
+    setFavorite(afterDelete);
+  };
   return (
     <>
       {openModal && (
         <Modal title={"hi dear"} setOpenModal={setOpenModal}>
           {favorite.map((item) => (
-            <Character key={item.id} item={item} />
+            <Character key={item.id} item={item}>
+              <button
+                className="icon red"
+                onClick={() => deleteHandler(item.id)}
+              >
+                <TrashIcon />
+              </button>
+            </Character>
           ))}
         </Modal>
       )}
